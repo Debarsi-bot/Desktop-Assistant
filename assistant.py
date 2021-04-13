@@ -4,6 +4,9 @@ import speech_recognition as sr
 import wikipedia
 import webbrowser
 import os
+import requests as req
+import urllib.request as ur
+import re
 
 
 engine = pyttsx3.init()
@@ -48,6 +51,12 @@ def google(query):
     query=query.replace('google',"").strip()
     webbrowser.open(f"www.google.com/search?q={query}")
 
+def playMedia(query):
+    query=query.replace("play","").strip().replace(" ","+")
+    html = ur.urlopen(f"https://www.youtube.com/results?search_query={query}")  #search youtube for the query
+    video_ids = re.findall(r"watch\?v=(\S{11})", html.read().decode())          #returns all the video_ids
+    webbrowser.open(f"www.youtube.com/watch?v={video_ids[0]}")
+
 
 if __name__ == '__main__':
     greet()
@@ -64,6 +73,8 @@ if __name__ == '__main__':
             google(query)
         elif 'open' in query:
             os.system(query.replace("open","").strip())
+        elif 'play' in query:
+            playMedia(query)
 
             
 
